@@ -25,7 +25,7 @@ def line_plot(var_list, ext_ln = False):
         if len(var_list)>=4:
                 ax.plot(df['Year'], df[var_list[3]], label = var_list[3])
         if ext_ln:
-                ax.plot(df['Year'], [10,10,10,10,10], alpha = 0)
+                ax.plot(df['Year'], [10]*len(df['Year']), alpha = 0)
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_ylabel('$ in Millions')
@@ -38,32 +38,36 @@ line_plot(df.columns[-4:])
 
 
 
+# Surpluss Line
+def surplus_line(revenue, surplus):
+        fig, ax = plt.subplots(figsize=(8,6))
+        ax.plot(df['Year'], revenue,
+                label = 'Revenue', color = '#034e7b')
+        ax.scatter(df['Year'], revenue, color = '#034e7b')
+        ax.plot(df['Year'], df['Expenditures (DGF)'],
+                label = 'Expenditure', color = '#a6bddb')
+        ax.scatter(df['Year'], df['Expenditures (DGF)'], color = '#a6bddb')
+        ax.bar(df['Year'], surplus, 
+                bottom = df['Expenditures (DGF)'],
+                alpha = 0.5, color = '#fec44f',
+                edgecolor = '#fe9929',
+                label = 'Surplus')
 
-fig, ax = plt.subplots(figsize=(8,6))
-ax.plot(df['Year'], df['Total Disc Rev'],
-        label = 'Revenue')
-ax.scatter(df['Year'], df['Total Disc Rev'])
-ax.plot(df['Year'], df['Expenditures (DGF)'],
-        label = 'Expenditure')
-ax.scatter(df['Year'], df['Expenditures (DGF)'], color = 'red')
-ax.bar(df['Year'], df['Total Disc Rev']-df['Expenditures (DGF)'], 
-        bottom = df['Expenditures (DGF)'],
-        alpha = 0.5, color = '#fec44f',
-        label = 'Surplus')
+        #for v, i  in enumerate(df['Expenditures (DGF)']):
+        #        ax.annotate(round(v,2))#, xy = (df['Expenditures (DGF)'][i]))
 
-#for v, i  in enumerate(df['Expenditures (DGF)']):
-#        ax.annotate(round(v,2))#, xy = (df['Expenditures (DGF)'][i]))
+        plt.legend(bbox_to_anchor = (1.0, 0.4))
 
-plt.legend(bbox_to_anchor = (1.0, 0.4))
+        ax.plot(df['Year'], [185]*len(df['Year']), alpha = 0)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.set_ylabel('$ in Millions')
+        #plt.title('A Title')
+        plt.show()
+        #plt.savefig('Revenue-Expenditure')
 
-ax.plot(df['Year'], [175,175,175,175,175], alpha = 0)
-ax.spines['right'].set_visible(False)
-ax.spines['top'].set_visible(False)
-ax.set_ylabel('$ in Millions')
-plt.title('A Title')
-#plt.show()
-plt.savefig('Revenue-Expenditure')
-
+surplus_line(df['Total Disc Rev'], df['Total Disc Rev']-df['Expenditures (DGF)'])
+surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'])
 
 fig, ax = plt.subplots(figsize=(8,6))
 plt.stackplot(df['Year'], df['Property Tax'], df['Sales Tax'], df['TOT'])
@@ -116,6 +120,8 @@ nested_pie(0)
 plt.pie([df['Total Disc Rev'][0]])
 plt.show()
 
+
+#Revenue by source stacked bar
 cmap([120,30,70,100])
 fig, ax = plt.subplots(figsize=(8,6))
 ax.bar(df['Year'], df['Other'], 
@@ -136,6 +142,7 @@ ax.bar(df['Year'], df['Sales Tax'],
 
 ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fec44f', label = 'Expenditures')
 ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 200, color = '#fec44f')
+#ax.plot(df['Year'], df['Total Disc Rev'], color  = '#02818a', label = 'Total Revenue')
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 #reverse ledgand order #https://stackoverflow.com/questions/34576059/reverse-the-order-of-legend
@@ -143,13 +150,13 @@ handles, labels = ax.get_legend_handles_labels()
 plt.legend(reversed(handles), reversed(labels), bbox_to_anchor = (1.0, 0.6))
 plt.subplots_adjust(right=0.75)
 ax.set_ylabel('$ in Millions')
-plt.title('A Title')
+#plt.title('A Title')
 
 #maybe label hight?
 # #https://stackoverflow.com/questions/30228069/how-to-display-the-value-of-the-bar-on-each-bar-with-pyplot-barh 
 #plt.savefig('staked_bar_revenue')
-#plt.savefig('staked_bar_blue')
-plt.show()
+plt.savefig('staked_bar_blue')
+#plt.show()
 
 
 
