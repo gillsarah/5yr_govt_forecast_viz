@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-sns.set_style('whitegrid')
+#sns.set_style('white')
 
 cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
-#sns.set_palette("BrBG")
+sns.set_palette('Dark2')
 
-#cmap = plt.get_cmap('Spectral')
+#cmap = plt.get_cmap('')
 colors = cmap(np.arange(4)*4)
 os.chdir('/Users/Sarah/Documents/Github/5yr_govt_forecast_viz')
 
@@ -39,7 +39,7 @@ line_plot(df.columns[-4:])
 
 
 
-fig, ax = plt.subplots(figsize=(10,8))
+fig, ax = plt.subplots(figsize=(8,6))
 ax.plot(df['Year'], df['Total Disc Rev'],
         label = 'Revenue')
 ax.scatter(df['Year'], df['Total Disc Rev'])
@@ -48,7 +48,7 @@ ax.plot(df['Year'], df['Expenditures (DGF)'],
 ax.scatter(df['Year'], df['Expenditures (DGF)'], color = 'red')
 ax.bar(df['Year'], df['Total Disc Rev']-df['Expenditures (DGF)'], 
         bottom = df['Expenditures (DGF)'],
-        alpha = 0.5, color = 'yellow',
+        alpha = 0.5, color = '#fec44f',
         label = 'Surplus')
 
 #for v, i  in enumerate(df['Expenditures (DGF)']):
@@ -75,39 +75,67 @@ plt.show()
 
 #Revenue Pie
 cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
-def revenue_pie(year):
+labels = ['Property Tax', 'TOT', 'Sales Tax', 'Other']
+def revenue_pie(year, labels):
         fig, ax = plt.subplots(figsize=(8,6))
-        ax.pie([df['Property Tax'][year], df['Sales Tax'][year], df['TOT'][year], df['Other'][year]],
+        ax.pie([df[labels[0]][year], df[labels[1]][year], df[labels[2]][year], df[labels[3]][year]],
                 explode = [0.02, 0.12, 0.07, 0.01],
-                labels=df.columns[1:5], autopct='%1.1f%%',
                 wedgeprops=dict(width=0.55, edgecolor='w'),
                 startangle=90,
                 counterclock=True,
-                colors = cmap([120,30,70,100]))
+                colors = cmap([120,30,70,100]),
+                labels=labels, 
+                autopct='%1.1f%%')
         plt.title('Revenue by Source {}'.format(df['Year'][year]))
+        #plt.savefig('pie')
         plt.show()
 
-revenue_pie(0)
-revenue_pie(1)
-revenue_pie(2)
+revenue_pie(0, labels)
+revenue_pie(1, labels)
+revenue_pie(2, labels)
 
+def nested_pie(year):
+        width = 0.3
+        fig, ax = plt.subplots(figsize=(8,6)) 
+        ax.pie([df['Total Disc Rev'][year]],
+                #labels = ['Revenue'],
+                radius = 1,
+                wedgeprops = dict(width=width, edgecolor='w'),
+                colors = cmap([120]))
+        ax.pie([df['Expenditures (DGF)'][year], df['Total Disc Rev'][year]- df['Expenditures (DGF)'][year]],
+                #labels = ['Expenditures', 'Surplus'],
+                radius = 1 - width,
+                wedgeprops = dict(width=width, edgecolor='w'),
+                colors = ['#a6bddb', '#fec44f'])
+        plt.title('General Fund Discretionary Revenue and Expenditures {}'.format(df['Year'][year]))
+        plt.savefig('nested pie')
+        #plt.show()
 
+nested_pie(0)
+ 
+plt.pie([df['Total Disc Rev'][0]])
+plt.show()
+
+cmap([120,30,70,100])
 fig, ax = plt.subplots(figsize=(8,6))
-ax.bar(df['Year'], df['Other'], color = '#a6cee3', edgecolor='w',
+ax.bar(df['Year'], df['Other'], 
+        color = cmap([140]), #'#3182bd', #'#a6cee3', #edgecolor='w',
         label = "Other Revenue")
 ax.bar(df['Year'], df['Property Tax'], 
-        bottom = df['Other'], color = '#1f78b4', edgecolor='w',
+        bottom = df['Other'], 
+        color = cmap([120]), #'#6baed6', #'#1f78b4', #edgecolor='w',
         label = 'Property Tax')
 ax.bar(df['Year'], df['TOT'], 
         bottom = df['Other']+ df['Property Tax'], 
-        color = '#33a02c', edgecolor='w', label = 'TOT')
+        color = cmap([90]), #'#9ecae1', #'#33a02c', #edgecolor='w', 
+        label = 'TOT')
 ax.bar(df['Year'], df['Sales Tax'], 
         bottom = df['Other']+ df['Property Tax']+ df['TOT'],       
-        color = '#b2df8a',
-        edgecolor='w', label = 'Sales Tax')
+        color = cmap([40]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
+        label = 'Sales Tax')
 
-
-#ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fdb863', label = 'Expenditures')
+ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fec44f', label = 'Expenditures')
+ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 200, color = '#fec44f')
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 #reverse ledgand order #https://stackoverflow.com/questions/34576059/reverse-the-order-of-legend
@@ -119,8 +147,9 @@ plt.title('A Title')
 
 #maybe label hight?
 # #https://stackoverflow.com/questions/30228069/how-to-display-the-value-of-the-bar-on-each-bar-with-pyplot-barh 
-plt.savefig('staked_bar_revenue')
-#plt.show()
+#plt.savefig('staked_bar_revenue')
+#plt.savefig('staked_bar_blue')
+plt.show()
 
 
 
