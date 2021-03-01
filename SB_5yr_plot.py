@@ -62,9 +62,10 @@ def surplus_line(revenue, surplus):
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_ylabel('$ in Millions')
+        ax.set_xlabel('Fiscal Year')
         #plt.title('A Title')
-        plt.show()
-        #plt.savefig('Revenue-Expenditure')
+        #plt.show()
+        plt.savefig('Revenue-Expenditure')
 
 surplus_line(df['Total Disc Rev'], df['Total Disc Rev']-df['Expenditures (DGF)'])
 surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'])
@@ -123,40 +124,68 @@ plt.show()
 
 #Revenue by source stacked bar
 cmap([120,30,70,100])
-fig, ax = plt.subplots(figsize=(8,6))
-ax.bar(df['Year'], df['Other'], 
-        color = cmap([140]), #'#3182bd', #'#a6cee3', #edgecolor='w',
-        label = "Other Revenue")
-ax.bar(df['Year'], df['Property Tax'], 
-        bottom = df['Other'], 
-        color = cmap([120]), #'#6baed6', #'#1f78b4', #edgecolor='w',
-        label = 'Property Tax')
-ax.bar(df['Year'], df['TOT'], 
-        bottom = df['Other']+ df['Property Tax'], 
-        color = cmap([90]), #'#9ecae1', #'#33a02c', #edgecolor='w', 
-        label = 'TOT')
-ax.bar(df['Year'], df['Sales Tax'], 
-        bottom = df['Other']+ df['Property Tax']+ df['TOT'],       
-        color = cmap([40]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
-        label = 'Sales Tax')
+def stacked_bar(show_expenditure = False):
+        fig, ax = plt.subplots(figsize=(8,6))
+        ax.bar(df['Year'], df['Other'], 
+                color = cmap([140]), #'#3182bd', #'#a6cee3', #edgecolor='w',
+                label = "Other Revenue")
+        ax.bar(df['Year'], df['Property Tax'], 
+                bottom = df['Other'], 
+                color = cmap([120]), #'#6baed6', #'#1f78b4', #edgecolor='w',
+                label = 'Property Tax')
+        ax.bar(df['Year'], df['TOT'], 
+                bottom = df['Other']+ df['Property Tax'], 
+                color = cmap([90]), #'#9ecae1', #'#33a02c', #edgecolor='w', 
+                label = 'TOT')
+        ax.bar(df['Year'], df['Sales Tax'], 
+                bottom = df['Other']+ df['Property Tax']+ df['TOT'],       
+                color = cmap([40]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
+                label = 'Sales Tax')
+        if show_expenditure:
+                ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fec44f', label = 'Expenditures')
+                ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 200, color = '#fec44f')
+        #ax.plot(df['Year'], df['Total Disc Rev'], color  = '#02818a', label = 'Total Revenue')
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        #reverse ledgand order #https://stackoverflow.com/questions/34576059/reverse-the-order-of-legend
+        handles, labels = ax.get_legend_handles_labels()
+        plt.legend(reversed(handles), reversed(labels), bbox_to_anchor = (1.0, 0.6))
+        plt.subplots_adjust(right=0.75)
+        ax.set_ylabel('$ in Millions')
+        #plt.title('A Title')
 
-ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fec44f', label = 'Expenditures')
-ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 200, color = '#fec44f')
-#ax.plot(df['Year'], df['Total Disc Rev'], color  = '#02818a', label = 'Total Revenue')
-ax.spines['right'].set_visible(False)
-ax.spines['top'].set_visible(False)
-#reverse ledgand order #https://stackoverflow.com/questions/34576059/reverse-the-order-of-legend
-handles, labels = ax.get_legend_handles_labels()
-plt.legend(reversed(handles), reversed(labels), bbox_to_anchor = (1.0, 0.6))
-plt.subplots_adjust(right=0.75)
-ax.set_ylabel('$ in Millions')
-#plt.title('A Title')
+        #maybe label hight?
+        # #https://stackoverflow.com/questions/30228069/how-to-display-the-value-of-the-bar-on-each-bar-with-pyplot-barh 
+        #plt.savefig('staked_bar_revenue')
+        #plt.savefig('staked_bar_blue')
+        #plt.show()
 
-#maybe label hight?
-# #https://stackoverflow.com/questions/30228069/how-to-display-the-value-of-the-bar-on-each-bar-with-pyplot-barh 
-#plt.savefig('staked_bar_revenue')
-plt.savefig('staked_bar_blue')
-#plt.show()
+stacked_bar()
+
+def add_table():
+        # https://matplotlib.org/stable/gallery/misc/table_demo.html
+        the_table = plt.table(cellText=[round(df['Property Tax'],2), round(df['Other'],2),
+                                round(df['TOT'],2), round(df['Sales Tax'],2)],
+                                rowLabels=['Property Tax', 'Other', 'TOT', 'Sales Tax'],
+                                rowColours=cmap([120,140,90,40]),
+                                colLabels=df['Year'],
+                                loc='bottom')
+        # Adjust layout to make room for the table:
+        plt.subplots_adjust(left=0.2, bottom=0.2)
+        plt.xticks([])
+
+def run_stacked_bar(show_expenditure = False, table = False, savefig = False, save_as = ''):
+        stacked_bar(show_expenditure = False)
+        if table:
+           add_table()  
+        if savefig:
+                plt.savefig(save_as) 
+        else:
+                plt.show()
+
+run_stacked_bar()
+run_stacked_bar(table = True)
+run_stacked_bar(table = True, savefig = True, save_as = 'test')
 
 
 
