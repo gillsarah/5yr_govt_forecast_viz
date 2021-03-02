@@ -107,7 +107,7 @@ def surplus_line(revenue, surplus, rev_label = 'Revenue',
 surplus_line(df['Total Disc Rev'], df['Total Disc Rev']-df['Expenditures (DGF)'], bbox=(0.99,0.3))
 surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'], 
                 'Revenue (Top 3 Sources Only)','#006d2c', 'top-3-rev-surplus',
-                (0.99,0.3))
+                (0.99,0.3), True)
 
 fig, ax = plt.subplots(figsize=(8,6))
 plt.stackplot(df['Year'], df['Property Tax'], df['Sales Tax'], df['TOT'])
