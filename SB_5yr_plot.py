@@ -6,8 +6,8 @@ import numpy as np
 
 #sns.set_style('white')
 
-cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
-sns.set_palette('PuBu')
+#cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
+#sns.set_palette('PuBu')
 
 #cmap = plt.get_cmap('')
 colors = cmap(np.arange(4)*4)
