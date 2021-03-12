@@ -6,7 +6,7 @@ import numpy as np
 
 #sns.set_style('white')
 
-#cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
+cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
 #sns.set_palette('PuBu')
 
 #cmap = plt.get_cmap('')
@@ -105,9 +105,9 @@ def surplus_line(revenue, surplus, rev_label = 'Revenue',
         plt.savefig(save_name)
 
 surplus_line(df['Total Disc Rev'], df['Total Disc Rev']-df['Expenditures (DGF)'], bbox=(0.99,0.3))
-surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'], 
-                'Revenue (Top 3 Sources Only)','#006d2c', 'top-3-rev-surplus',
-                (0.99,0.3), True)
+#surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'], 
+#                'Revenue (Top 3 Sources Only)','#006d2c', 'top-3-rev-surplus',
+#                (0.99,0.3), True)
 
 fig, ax = plt.subplots(figsize=(8,6))
 plt.stackplot(df['Year'], df['Property Tax'], df['Sales Tax'], df['TOT'])
@@ -162,27 +162,30 @@ plt.show()
 
 
 #Revenue by source stacked bar
-cmap([120,30,70,100])
 def stacked_bar(show_expenditure = False):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.bar(df['Year'], df['Other'], 
-                color = cmap([140]), #'#3182bd', #'#a6cee3', #edgecolor='w',
+                color = cmap([150]), #'#3182bd', #'#a6cee3', #edgecolor='w',
                 label = "Other Revenue")
         ax.bar(df['Year'], df['Property Tax'], 
                 bottom = df['Other'], 
-                color = cmap([120]), #'#6baed6', #'#1f78b4', #edgecolor='w',
+                color = cmap([130]), #'#6baed6', #'#1f78b4', #edgecolor='w',
                 label = 'Property Tax')
+        ax.bar(df['Year'], df['Canabus Tax'],
+                bottom = df['Other']+ df['Property Tax'],
+                color = cmap([100]),
+                label = 'Canabus Tax')
         ax.bar(df['Year'], df['TOT'], 
-                bottom = df['Other']+ df['Property Tax'], 
-                color = cmap([90]), #'#9ecae1', #'#33a02c', #edgecolor='w', 
+                bottom = df['Other']+ df['Property Tax']+ df['Canabus Tax'], 
+                color = cmap([60]), #'#9ecae1', #'#33a02c', #edgecolor='w', 
                 label = 'TOT')
         ax.bar(df['Year'], df['Sales Tax'], 
-                bottom = df['Other']+ df['Property Tax']+ df['TOT'],       
-                color = cmap([40]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
+                bottom = df['Other']+ df['Property Tax']+ df['TOT']+ df['Canabus Tax'],       
+                color = cmap([30]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
                 label = 'Sales Tax')
         if show_expenditure:
                 ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fec44f', label = 'Expenditures')
-                ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 200, color = '#fec44f')
+                ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 20, color = '#fec44f')
         #ax.plot(df['Year'], df['Total Disc Rev'], color  = '#02818a', label = 'Total Revenue')
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
@@ -197,19 +200,19 @@ def stacked_bar(show_expenditure = False):
         #maybe label hight?
         # #https://stackoverflow.com/questions/30228069/how-to-display-the-value-of-the-bar-on-each-bar-with-pyplot-barh 
         #plt.savefig('staked_bar_revenue')
-        plt.savefig('staked_bar_blue')
-        #plt.show()
+        #plt.savefig('staked_bar_blue')
+        plt.show()
 
 stacked_bar()
 stacked_bar(show_expenditure = True)
-plt.savefig('staked_bar_blue')
 
+#broke it -not sure why, but doesn't run with plot anymore
 def add_table():
         # https://matplotlib.org/stable/gallery/misc/table_demo.html
         the_table = plt.table(cellText=[round(df['Property Tax'],2), round(df['Other'],2),
-                                round(df['TOT'],2), round(df['Sales Tax'],2)],
-                                rowLabels=['Property Tax', 'Other', 'TOT', 'Sales Tax'],
-                                rowColours=cmap([120,140,90,40]),
+                                round(df['Canabus Tax'],2), round(df['TOT'],2), round(df['Sales Tax'],2)],
+                                rowLabels=['Property Tax', 'Other', 'Canabus Tax','TOT', 'Sales Tax'],
+                                rowColours=cmap([130, 150, 100, 60, 30]),
                                 colLabels=df['Year'],
                                 loc='bottom')
         # Adjust layout to make room for the table:
@@ -217,7 +220,7 @@ def add_table():
         plt.xticks([])
 
 def run_stacked_bar(show_expenditure = False, table = False, savefig = False, save_as = ''):
-        stacked_bar(show_expenditure = False)
+        stacked_bar(show_expenditure = show_expenditure)
         if table:
            add_table()  
         if savefig:
