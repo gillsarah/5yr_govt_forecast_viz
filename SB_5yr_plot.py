@@ -15,7 +15,7 @@ os.chdir('/Users/Sarah/Documents/Github/5yr_govt_forecast_viz')
 
 df = pd.read_csv('SB_5yr_for_py.csv')
 
-#plot growth or TOT and ST only
+#plot growth
 def line_plot(var_list, y_axis, ext_ln = False):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.plot(df['Year'], df[var_list[0]], label = var_list[0])
@@ -40,71 +40,53 @@ line_plot(df.columns[-4:], "% Annual Growth")
 
 
 # Surpluss Line
-def surplus_line(revenue, surplus, rev_label = 'Revenue', 
-                rev_color = '#034e7b', save_name = 'surplus_line',
-                bbox = (1.1, 0.4), deficite = False):
+def account_balance_line(revenue, expenditure, rev_label = 'Revenue', 
+                         rev_color = '#034e7b', save_name = 'surplus_line',
+                         bbox = (1.1, 0.4), surplus = False):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.plot(df['Year'], revenue,
                 label = rev_label, color = rev_color)
         ax.scatter(df['Year'], revenue, color = '#034e7b')
-        ax.plot(df['Year'], df['Expenditures (DGF)'],
+        ax.plot(df['Year'], expenditure,
                 label = 'Expenditure', color = '#a6bddb')
-        ax.scatter(df['Year'], df['Expenditures (DGF)'], color = '#a6bddb')
-        '''
-        pos_list = []
-        pos_yr = []
-        neg_list = []
-        neg_yr = []
-        for i,v in enumerate(surplus):
-                if v>0:
-                        pos_list.append(v)
-                        pos_yr.append(df['Year'][i])
-                elif v <0:
-                        neg_list.append(v)
-                        neg_yr.append(df['Year'][i])
-        '''      
-        ax.bar(df['Year'], surplus, 
-                        bottom = df['Expenditures (DGF)'],
-                        alpha = 0.5, color = '#fec44f',
-                        edgecolor = '#fe9929',
-                        label = 'Surplus')
-        if deficite:
-                ax.bar(df['Year'], surplus, 
-                        bottom = df['Expenditures (DGF)'],
-                        alpha = 0.0, color = 'red',
-                        edgecolor = '#fe9929',
-                        label = 'Deficit')
+        ax.scatter(df['Year'], expenditure, color = '#a6bddb')
         
-        '''
-        ax.bar(pos_yr, pos_list, 
-                        bottom = df['Expenditures (DGF)'],
+        if surplus:     
+                ax.bar(df['Year'], revenue - expenditure, 
+                        bottom = expenditure,
                         alpha = 0.5, color = '#fec44f',
                         edgecolor = '#fe9929',
                         label = 'Surplus')
-        ax.bar(neg_yr, neg_list, 
-                        bottom = df['Expenditures (DGF)'],
-                        alpha = 0.5, color = 'red',
-                        edgecolor = '#fe9929',
-                        label = 'deficite')
-        '''
+                position = 'Surplus'
+        else:
+                ax.bar(df['Year'], revenue - expenditure, 
+                        bottom = expenditure,
+                        alpha = 0.5, color = '#fb6a4a',
+                        edgecolor = '#ef3b2c',
+                        label = 'Deficit')
+                position = 'Deficit'
 
-        #for v, i  in enumerate(df['Expenditures (DGF)']):
-        #        ax.annotate(round(v,2))#, xy = (df['Expenditures (DGF)'][i]))
+        # annotate the account position
+        for i, v in enumerate(revenue - expenditure):
+                #if v != 0: 
+                ax.annotate('${}M'.format(round(v,2)), 
+                        (revenue[i] - 0.45*(revenue[i] - expenditure[i])),
+                                horizontalalignment='center', verticalalignment='center',
+                                fontsize = 8, weight="bold")
 
         plt.legend(bbox_to_anchor = bbox)
-
-        #ax.plot(df['Year'], [225]*len(df['Year']), alpha = 0)
-        #ax.plot(df['Year'], [374]*len(df['Year']), alpha = 0)
-        plt.ylim((225,375))
+        # allow for some space on top and bottom
+        plt.ylim((revenue.min()-20,revenue.max()+10))
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_ylabel('$ in Millions')
         ax.set_xlabel('Fiscal Year')
-        #plt.title('A Title')
-        #plt.show()
-        plt.savefig(save_name)
+        plt.title('Forecasted Financial Position\n{}'.format(position))
+        plt.show()
+        #plt.savefig(save_name)
 
-surplus_line(df['Total Disc Rev'], df['Total Disc Rev']-df['Expenditures (DGF)'], bbox=(0.99,0.3))
+account_balance_line(df['Total Disc Rev'], df['Expenditures (DGF)'], 
+                        bbox=(0.99,0.3))
 #surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'], 
 #                'Revenue (Top 3 Sources Only)','#006d2c', 'top-3-rev-surplus',
 #                (0.99,0.3), True)
