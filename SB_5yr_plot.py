@@ -95,29 +95,21 @@ def account_balance_line(revenue, expenditure, rev_label = 'Revenue',
 
 account_balance_line(df['Total Disc Rev'], df['Expenditures (DGF)'], 
                         bbox=(0.99,0.3))
-#surplus_line(df['Total w/o Other'], df['Surplus w/o Other Rev'], 
-#                'Revenue (Top 3 Sources Only)','#006d2c', 'top-3-rev-surplus',
-#                (0.99,0.3), True)
-
-fig, ax = plt.subplots(figsize=(8,6))
-plt.stackplot(df['Year'], df['Property Tax'], df['Sales Tax'], df['TOT'])
-plt.xlabel('Fiscal Year')
-plt.ylabel('Revenue Source')
-plt.show()
 
 
 
 #Revenue Pie
 cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
-labels = ['Property Tax', 'TOT', 'Sales Tax', 'Other']
+labels = ['Property Tax', 'TOT', 'Sales Tax', 'Canabus Tax', 'Other']
 def revenue_pie(year, labels):
         fig, ax = plt.subplots(figsize=(8,6))
-        ax.pie([df[labels[0]][year], df[labels[1]][year], df[labels[2]][year], df[labels[3]][year]],
-                explode = [0.02, 0.12, 0.07, 0.01],
+        ax.pie([df[labels[0]][year], df[labels[1]][year], 
+                df[labels[2]][year], df[labels[3]][year], df[labels[4]][year]],
+                explode = [0.02, 0.12, 0.07, 0.01, 0.01],
                 wedgeprops=dict(width=0.55, edgecolor='w'),
                 startangle=90,
                 counterclock=True,
-                colors = cmap([120,30,70,100]),
+                colors = cmap([120,30,70,100,160]),
                 labels=labels, 
                 autopct='%1.1f%%')
         plt.title('Revenue by Source {}'.format(df['Year'][year]))
