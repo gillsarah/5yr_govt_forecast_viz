@@ -65,15 +65,15 @@ def account_balance_line(revenue, expenditure, rev_label = 'Revenue',
                         edgecolor = '#ef3b2c',
                         label = 'Deficit')
                 position = 'Deficit'
-
+        '''
         # annotate the account position
         for i, v in enumerate(revenue - expenditure):
                 #if v != 0: 
                 ax.annotate('${}M'.format(round(v,2)), 
-                        (revenue[i] - 0.45*(revenue[i] - expenditure[i])),
+                        (df['Year'], revenue[i] - 0.45*(revenue[i] - expenditure[i])),
                                 horizontalalignment='center', verticalalignment='center',
                                 fontsize = 8, weight="bold")
-
+        '''
         plt.legend(bbox_to_anchor = bbox)
         # allow for some space on top and bottom
         plt.ylim((revenue.min()-20,revenue.max()+10))
