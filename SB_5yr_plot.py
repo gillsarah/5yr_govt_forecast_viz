@@ -100,7 +100,7 @@ account_balance_line(df['Total Disc Rev'], df['Expenditures (DGF)'],
 
 #Revenue Pie
 cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
-labels = ['Property Tax', 'TOT', 'Sales Tax', 'Canabus Tax', 'Other']
+labels = ['Property Tax', 'Sales Tax', 'TOT', 'Cannabis Tax', 'Other']
 def revenue_pie(year, labels):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.pie([df[labels[0]][year], df[labels[1]][year], 
@@ -120,28 +120,6 @@ revenue_pie(0, labels)
 revenue_pie(1, labels)
 revenue_pie(2, labels)
 
-def nested_pie(year):
-        width = 0.3
-        fig, ax = plt.subplots(figsize=(8,6)) 
-        ax.pie([df['Total Disc Rev'][year]],
-                #labels = ['Revenue'],
-                radius = 1,
-                wedgeprops = dict(width=width, edgecolor='w'),
-                colors = cmap([120]))
-        ax.pie([df['Expenditures (DGF)'][year], df['Total Disc Rev'][year]- df['Expenditures (DGF)'][year]],
-                #labels = ['Expenditures', 'Surplus'],
-                radius = 1 - width,
-                wedgeprops = dict(width=width, edgecolor='w'),
-                colors = ['#a6bddb', '#fec44f'])
-        plt.title('General Fund Discretionary Revenue and Expenditures {}'.format(df['Year'][year]))
-        plt.savefig('nested pie')
-        #plt.show()
-
-nested_pie(0)
- 
-plt.pie([df['Total Disc Rev'][0]])
-plt.show()
-
 
 #Revenue by source stacked bar
 def stacked_bar(show_expenditure = False):
@@ -153,16 +131,16 @@ def stacked_bar(show_expenditure = False):
                 bottom = df['Other'], 
                 color = cmap([130]), #'#6baed6', #'#1f78b4', #edgecolor='w',
                 label = 'Property Tax')
-        ax.bar(df['Year'], df['Canabus Tax'],
+        ax.bar(df['Year'], df['Cannabis Tax'],
                 bottom = df['Other']+ df['Property Tax'],
                 color = cmap([100]),
                 label = 'Canabus Tax')
         ax.bar(df['Year'], df['TOT'], 
-                bottom = df['Other']+ df['Property Tax']+ df['Canabus Tax'], 
+                bottom = df['Other']+ df['Property Tax']+ df['Cannabis Tax'], 
                 color = cmap([60]), #'#9ecae1', #'#33a02c', #edgecolor='w', 
                 label = 'TOT')
         ax.bar(df['Year'], df['Sales Tax'], 
-                bottom = df['Other']+ df['Property Tax']+ df['TOT']+ df['Canabus Tax'],       
+                bottom = df['Other']+ df['Property Tax']+ df['TOT']+ df['Cannabis Tax'],       
                 color = cmap([30]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
                 label = 'Sales Tax')
         if show_expenditure:
