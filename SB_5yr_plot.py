@@ -103,9 +103,9 @@ account_balance_line(df['Total Disc Rev'], df['Expenditures (DGF)'],
                         bbox=(0.99,0.3))
 
 
-
 #Revenue Pie
 labels = list(colors.keys())
+labels.reverse()
 #labels = ['Property Tax', 'Sales Tax', 'TOT', 'Cannabis Tax', 'Other']
 def revenue_pie(year, labels, savefig = False, save_as = 'revenue_pie'):
         '''input, fiscal year as index location for value in the 'Year' column
@@ -114,14 +114,14 @@ def revenue_pie(year, labels, savefig = False, save_as = 'revenue_pie'):
         color is determined by the color dictionary with keys = each label
         '''
         fig, ax = plt.subplots(figsize=(8,6))
-        ax.pie([df[labels[0]][year], df[labels[4]][year], 
-                df[labels[3]][year], df[labels[2]][year], df[labels[1]][year]],
-                explode = [0.02, 0.12, 0.07, 0.01, 0.01],
+        ax.pie([df[labels[0]][year], df[labels[1]][year], 
+                df[labels[2]][year], df[labels[3]][year], df[labels[4]][year]],
+                explode = [0.01, 0.1, 0.01, 0.01, 0.01],
                 wedgeprops=dict(width=0.55, edgecolor='w'),
-                startangle=90,
+                #startangle=90,
                 counterclock=True,
-                colors = cmap([colors[labels[0]],colors[labels[4]],
-                                colors[labels[3]],colors[labels[2]],colors[labels[1]]]),
+                colors = cmap([colors[labels[0]],colors[labels[1]],
+                                colors[labels[2]],colors[labels[3]],colors[labels[4]]]),
                 labels=labels, 
                 autopct='%1.1f%%')
         plt.title('Revenue by Source {}'.format(df['Year'][year]))
