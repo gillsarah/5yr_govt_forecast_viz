@@ -12,8 +12,8 @@ df = pd.read_csv('SB_5yr_for_py.csv')
 
 cmap = sns.cubehelix_palette(start=.5, rot=-.5, as_cmap=True)
 # dict to map colors to cmap index locations
-colors = {'Property Tax':130, 'Other':150, 
-          'Cannabis Tax':100, 'TOT':60, 'Sales Tax':30}
+colors = {'Property Tax':130, 'Other':160, 
+          'Cannabis Tax':100, 'TOT':55, 'Sales Tax':20}
 
 
 #plot growth
@@ -116,10 +116,10 @@ def revenue_pie(year, labels, savefig = False, save_as = 'revenue_pie'):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.pie([df[labels[0]][year], df[labels[1]][year], 
                 df[labels[2]][year], df[labels[3]][year], df[labels[4]][year]],
-                explode = [0.01, 0.1, 0.01, 0.01, 0.01],
+                explode = [0.13, 0.09, 0.06, 0.02, 0.01],
                 wedgeprops=dict(width=0.55, edgecolor='w'),
                 #startangle=90,
-                counterclock=True,
+                #counterclock=True,
                 colors = cmap([colors[labels[0]],colors[labels[1]],
                                 colors[labels[2]],colors[labels[3]],colors[labels[4]]]),
                 labels=labels, 
