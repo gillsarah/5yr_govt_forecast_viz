@@ -17,7 +17,7 @@ colors = {'Property Tax':130, 'Other':150,
 
 
 #plot growth
-def line_plot(var_list, y_axis, ext_ln = False):
+def line_plot(var_list, y_axis, ext_ln = False, savefig = False, save_as = 'revenue_line', title = ''):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.plot(df['Year'], df[var_list[0]], label = var_list[0])
         ax.plot(df['Year'], df[var_list[1]], label = var_list[1])
@@ -26,14 +26,19 @@ def line_plot(var_list, y_axis, ext_ln = False):
         if len(var_list)>=4:
                 ax.plot(df['Year'], df[var_list[3]], label = var_list[3])
         if ext_ln:
+                # adds an invisible line at 10mill
                 ax.plot(df['Year'], [10]*len(df['Year']), alpha = 0)
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.set_ylabel(y_axis)
         ax.set_xlabel('Fiscal Year')
         plt.legend()
-        #plt.title('A Title')
-        plt.show()
+        plt.title(title)
+        if savefig:
+                plt.savefig(save_as)
+        else:
+                plt.show()
+
 
 line_plot(df.columns[2:4], '', ext_ln = True)
 line_plot(df.columns[-4:], "% Annual Growth")
@@ -102,7 +107,7 @@ account_balance_line(df['Total Disc Rev'], df['Expenditures (DGF)'],
 #Revenue Pie
 labels = list(colors.keys())
 #labels = ['Property Tax', 'Sales Tax', 'TOT', 'Cannabis Tax', 'Other']
-def revenue_pie(year, labels):
+def revenue_pie(year, labels, savefig = False, save_as = 'revenue_pie'):
         '''input, fiscal year as index location for value in the 'Year' column
         and a list of 5 strings matching the column names for each top revenue source
         output is a pie plot of these 5 revenue sources
@@ -120,8 +125,10 @@ def revenue_pie(year, labels):
                 labels=labels, 
                 autopct='%1.1f%%')
         plt.title('Revenue by Source {}'.format(df['Year'][year]))
-        #plt.savefig('pie')
-        plt.show()
+        if savefig:
+                plt.savefig(save_as)
+        else:
+                plt.show()
 
 revenue_pie(0, labels)
 revenue_pie(1, labels)
