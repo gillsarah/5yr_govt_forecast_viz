@@ -136,7 +136,7 @@ revenue_pie(2, labels)
 
 
 #Revenue by source stacked bar
-def stacked_bar(show_expenditure = False):
+def stacked_bar(title = '', show_expenditure = False, annotate_expend = False, annotate_rev = False):
         fig, ax = plt.subplots(figsize=(8,6))
         ax.bar(df['Year'], df['Other'], 
                 color = cmap([colors['Other']]), #'#3182bd', #'#a6cee3', #edgecolor='w',
@@ -157,9 +157,24 @@ def stacked_bar(show_expenditure = False):
                 bottom = df['Other']+ df['Property Tax']+ df['TOT']+ df['Cannabis Tax'],       
                 color = cmap([colors['Sales Tax']]), #'#c6dbef', #'#b2df8a', #edgecolor='w', 
                 label = 'Sales Tax')
+        
+        if annotate_rev:
+                for i, v in enumerate(df['Total Disc Rev']):
+                        ax.annotate('${}M'.format(round(v,2)),
+                                   (df['Year'][i], df['Total Disc Rev'][i]),
+                                    horizontalalignment='center', verticalalignment='bottom',
+                                    fontsize = 8)                       
+
         if show_expenditure:
                 ax.plot(df['Year'], df['Expenditures (DGF)'], color = '#fec44f', label = 'Expenditures')
                 ax.scatter(df['Year'], df['Expenditures (DGF)'], s = 20, color = '#fec44f')
+                
+                if annotate_expend:
+                        for i, v in enumerate(df['Expenditures (DGF)']):
+                                ax.annotate('${}M'.format(round(v,2)),
+                                           (df['Year'][i], df['Expenditures (DGF)'][i]),
+                                           horizontalalignment='center', verticalalignment='bottom',
+                                           fontsize = 8)
         #ax.plot(df['Year'], df['Total Disc Rev'], color  = '#02818a', label = 'Total Revenue')
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
@@ -169,7 +184,7 @@ def stacked_bar(show_expenditure = False):
         plt.subplots_adjust(right=0.75)
         ax.set_ylabel('$ in Millions')
         ax.set_xlabel('Fiscal Year')
-        #plt.title('A Title')
+        plt.title(title)
 
         #maybe label hight?
         # #https://stackoverflow.com/questions/30228069/how-to-display-the-value-of-the-bar-on-each-bar-with-pyplot-barh 
@@ -177,10 +192,11 @@ def stacked_bar(show_expenditure = False):
         #plt.savefig('staked_bar_blue')
         plt.show()
 
-stacked_bar()
-stacked_bar(show_expenditure = True)
+stacked_bar(annotate_rev=True)
+stacked_bar(show_expenditure = True, annotate_expend = True)
 
 #broke it -not sure why, but doesn't run with plot anymore
+#hah, probably bc plt.show in staked_bar
 def add_table():
         # https://matplotlib.org/stable/gallery/misc/table_demo.html
         the_table = plt.table(cellText=[round(df['Property Tax'],2), round(df['Other'],2),
